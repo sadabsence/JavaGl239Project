@@ -1,20 +1,21 @@
 package Gui;
 
-import problem.PointClass;
+import problem.Point;
+import problem.Problem;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-// форма нашего приложения
+/**
+ * Класс формы приложения
+ */
 public class Form extends JFrame {
-
-    private static final String FILE_NAME = "points.txt";
-
-    // панель для отображения OpenGL
+    /**
+     * панель для отображения OpenGL
+     */
     private JPanel GLPlaceholder;
     private JPanel root;
-    private JLabel camText;
     private JTextField xPointField;
     private JTextField yPointField;
     private JButton randomBtn;
@@ -27,15 +28,20 @@ public class Form extends JFrame {
     private JButton addPoint;
     private JRadioButton radioButton1;
     private JRadioButton radioButton2;
-
-    final Timer timer;
-
-    // рисовалка OpenGL
+    /**
+     * таймер
+     */
+    private final Timer timer;
+    /**
+     * рисовалка OpenGL
+     */
     private final RendererGL renderer;
 
-    // Конструктор формы
-    public Form() {
-        super("OpenGL Tutorial");
+    /**
+     * Конструктор формы
+     */
+    private Form() {
+        super(Problem.PROBLEM_CAPTION);
         // инициализируем OpenGL
         renderer = new RendererGL();
         // связываем элемент на форме с рисовалкой OpenGL
@@ -69,9 +75,12 @@ public class Form extends JFrame {
         initWidgets();
     }
 
+    /**
+     * Инициализация виджетов
+     */
     private void initWidgets() {
         // задаём текст полю описания задачи
-        problemText.setText(convertToMultiline(problemStr));
+        problemText.setText("<html>" + Problem.PROBLEM_TEXT.replaceAll("\n", "<br>"));
         // делаем первое радио выбранным
         radioButton1.setSelected(true);
         radioButton2.setSelected(false);
@@ -81,8 +90,8 @@ public class Form extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 double x = Double.parseDouble(xPointField.getText());
                 double y = Double.parseDouble(yPointField.getText());
-                int setVal = radioButton1.isSelected()? PointClass.SET_1:PointClass.SET_2;
-                renderer.problem.addPoint(x,y,setVal);
+                int setVal = radioButton1.isSelected() ? Point.SET_1 : Point.SET_2;
+                renderer.problem.addPoint(x, y, setVal);
             }
         });
         randomBtn.addActionListener(new ActionListener() {
@@ -94,19 +103,19 @@ public class Form extends JFrame {
         loadFromFileBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                renderer.problem.loadFromFile(FILE_NAME);
+                renderer.problem.loadFromFile();
             }
         });
         saveToFileBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                renderer.problem.saveToFile(FILE_NAME);
+                renderer.problem.saveToFile();
             }
         });
         clearBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                renderer.problem.deletePoints();
+                renderer.problem.clear();
             }
         });
         solveBtn.addActionListener(new ActionListener() {
@@ -117,19 +126,19 @@ public class Form extends JFrame {
         });
     }
 
+    /**
+     * Событие таймера
+     */
     private void onTime() {
         // события по таймеру
     }
 
-    // преобразование в html
-    private static String convertToMultiline(String orig) {
-        return "<html>" + orig.replaceAll("\n", "<br>");
-    }
-
-    private static final String problemStr = "ПОСТАНОВКА ЗАДАЧИ:\nЗаданы два множества точек в пространстве.\n Требуется построить пересечения и разность этих множеств";
-
+    /**
+     * Главный метод
+     *
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
         new Form();
     }
-
 }
